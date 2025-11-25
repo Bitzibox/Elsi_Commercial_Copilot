@@ -1,0 +1,8 @@
+{
+  "name": "ElsyvIA - Commercial Copilot",
+  "description": "A smart commercial copilot for SME owners featuring Elsi, an AI agent for financial advice, document generation, and voice interaction.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}
