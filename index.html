@@ -22,6 +22,26 @@
         background: #94a3b8;
       }
     </style>
+    <script>
+      // Suppress non-critical Google telemetry errors blocked by ad blockers
+      // This prevents console spam while keeping important errors visible
+      (function() {
+        const originalError = console.error;
+        console.error = function(...args) {
+          const errorString = args.join(' ');
+
+          // Filter out Google Play logging errors (blocked by ad blockers)
+          if (errorString.includes('play.google.com/log') ||
+              errorString.includes('ERR_BLOCKED_BY_CLIENT')) {
+            // Silently ignore - this is expected with ad blockers
+            return;
+          }
+
+          // Allow all other errors to display normally
+          originalError.apply(console, args);
+        };
+      })();
+    </script>
   <script type="importmap">
 {
   "imports": {
