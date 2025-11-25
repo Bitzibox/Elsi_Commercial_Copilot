@@ -4,6 +4,7 @@ export enum AppMode {
   CHAT = 'CHAT',
   VOICE = 'VOICE',
   DOCUMENTS = 'DOCUMENTS',
+  QUOTES = 'QUOTES',
   SETTINGS = 'SETTINGS'
 }
 
@@ -72,4 +73,57 @@ export interface ReportTemplate {
   name: string;
   description: string;
   prompt: string;
+}
+
+// --- QUOTE TYPES ---
+
+export interface Address {
+  street: string;
+  city: string;
+  zip: string;
+  country: string;
+}
+
+export interface CompanyInfo {
+  name: string;
+  address: Address;
+  email: string;
+  phone: string;
+  siret: string;
+  vatNumber?: string;
+}
+
+export interface ClientInfo {
+  name: string;
+  address: Address;
+  email?: string;
+  phone?: string;
+  deliveryAddress?: Address;
+}
+
+export interface QuoteItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number; // e.g. 20 for 20%
+}
+
+export interface Quote {
+  id: string;
+  reference: string;
+  status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED';
+  date: string; // ISO Date
+  validUntil: string; // ISO Date
+  startDate?: string;
+  duration?: string;
+  
+  company: CompanyInfo;
+  client: ClientInfo;
+  items: QuoteItem[];
+  
+  terms: {
+    paymentTerms: string;
+    notes?: string;
+  };
 }

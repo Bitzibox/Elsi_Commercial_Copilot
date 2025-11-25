@@ -1,6 +1,7 @@
 
 import { GoogleGenAI, Chat, Type } from "@google/genai";
 import { GeneratedArtifact, ArtifactType, Language } from "../types";
+import { quoteTools } from "./toolDefinitions";
 
 const apiKey = process.env.API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });
@@ -12,7 +13,10 @@ Your goal is to help manage finances, analyze sales, and generate business docum
 You are running on Gemini 3 Pro, so use your advanced reasoning capabilities.
 When asked to create a document, quote, or plan, act as a professional consultant.
 If the user asks for a specific business artifact (Quote, Plan, Table), provide the data in JSON format within the response so it can be rendered visually.
-All monetary values should be in Euros (€).`;
+All monetary values should be in Euros (€).
+IMPORTANT: You have access to tools to manage Quotes (Devis). 
+If the user wants to create a quote, ASK for the necessary details (Client name, items, prices) one by one or all together before calling the 'create_quote' tool. 
+Do not call the tool with empty placeholder data. Guide the user through the creation process.`;
 
 let chatSession: Chat | null = null;
 let currentLanguage: Language = 'en';
@@ -35,6 +39,7 @@ export const getChatSession = (language: Language = 'en'): Chat => {
         systemInstruction: BASE_SYSTEM_INSTRUCTION + langInstruction,
         // Using thinking config for complex business reasoning
         thinkingConfig: { thinkingBudget: 2048 }, 
+        tools: [{ functionDeclarations: quoteTools }]
       },
     });
   }
@@ -114,8 +119,14 @@ export const generateArtifact = async (prompt: string, type: ArtifactType, langu
 
 export const sendMessageToElsi = async (text: string, language: Language = 'en') => {
   const chat = getChatSession(language);
+  // We return the raw response object to handle functionCalls in App.tsx if needed, 
+  // but for simplicity here we return text.
+  // Note: For tools to work in Chat, we'd need to loop in App.tsx. 
+  // For this architecture, we will let App.tsx handle tool logic for Live API,
+  // and for Chat we might need to expose the whole response.
+  // Updating to return full response for tool handling in App.tsx
   const result = await chat.sendMessage({ message: text });
-  return result.text;
+  return result; 
 };
 
 // --- Live API (Gemini 2.5 Flash Native Audio) Config ---

@@ -2,7 +2,7 @@
 import { Language } from '../types';
 
 type TranslationKey = 
-  | 'dashboard' | 'chat' | 'voice' | 'documents' | 'settings'
+  | 'dashboard' | 'chat' | 'voice' | 'documents' | 'settings' | 'quotes'
   | 'welcome' | 'financialSnapshot' | 'revenue' | 'expenses'
   | 'netProfit' | 'forecast' | 'voiceMode' | 'listening'
   | 'speakNaturally' | 'tapToStart' | 'endSession' | 'startConversation'
@@ -14,7 +14,12 @@ type TranslationKey =
   | 'newReportTemplate' | 'templateName' | 'describeStructure' | 'cancel'
   | 'saveTemplate' | 'goToChat' | 'notifications' | 'markAllRead'
   | 'noNewAlerts' | 'askElsi' | 'chatPlaceholder' | 'lowRevenueAlert'
-  | 'highExpenseAlert' | 'revenueBelow' | 'expensesExceeded' | 'trendVsLastMonth';
+  | 'highExpenseAlert' | 'revenueBelow' | 'expensesExceeded' | 'trendVsLastMonth'
+  | 'quotesTitle' | 'createQuote' | 'quoteReference' | 'client' | 'date' | 'status'
+  | 'amount' | 'actions' | 'print' | 'delete' | 'newQuote' | 'companyInfo'
+  | 'clientInfo' | 'items' | 'description' | 'qty' | 'price' | 'total'
+  | 'terms' | 'validUntil' | 'paymentTerms' | 'notes' | 'bonPourAccord'
+  | 'preview' | 'edit' | 'downloadPdf' | 'subtotal' | 'vat' | 'totalTTC' | 'noQuotes';
 
 const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
@@ -22,6 +27,7 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     chat: 'Chat with Elsi',
     voice: 'Voice Mode',
     documents: 'Documents',
+    quotes: 'Quotes',
     settings: 'Settings',
     welcome: 'Business Overview',
     financialSnapshot: 'Welcome back! Here is your financial snapshot.',
@@ -68,13 +74,44 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     highExpenseAlert: 'High Expense Alert',
     revenueBelow: 'Revenue is below threshold.',
     expensesExceeded: 'Expenses exceeded limit.',
-    trendVsLastMonth: 'vs last month'
+    trendVsLastMonth: 'vs last month',
+    quotesTitle: 'Quotes Management',
+    createQuote: 'Create Quote',
+    quoteReference: 'Ref',
+    client: 'Client',
+    date: 'Date',
+    status: 'Status',
+    amount: 'Amount',
+    actions: 'Actions',
+    print: 'Print',
+    delete: 'Delete',
+    newQuote: 'New Quote',
+    companyInfo: 'Company Info',
+    clientInfo: 'Client Info',
+    items: 'Line Items',
+    description: 'Description',
+    qty: 'Qty',
+    price: 'Unit Price (€)',
+    total: 'Total',
+    terms: 'Terms & Conditions',
+    validUntil: 'Valid Until',
+    paymentTerms: 'Payment Terms',
+    notes: 'Notes / Duration',
+    bonPourAccord: 'Good for approval',
+    preview: 'Preview',
+    edit: 'Edit',
+    downloadPdf: 'Download PDF',
+    subtotal: 'Subtotal (HT)',
+    vat: 'VAT (20%)',
+    totalTTC: 'Total (TTC)',
+    noQuotes: 'No quotes created yet. Ask Elsi to create one!'
   },
   fr: {
     dashboard: 'Tableau de Bord',
     chat: 'Discuter avec Elsi',
     voice: 'Mode Vocal',
     documents: 'Documents',
+    quotes: 'Devis',
     settings: 'Paramètres',
     welcome: 'Aperçu Commercial',
     financialSnapshot: 'Bon retour ! Voici votre bilan financier.',
@@ -121,7 +158,37 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     highExpenseAlert: 'Alerte Dépenses Élevées',
     revenueBelow: 'Les revenus sont sous le seuil.',
     expensesExceeded: 'Les dépenses dépassent la limite.',
-    trendVsLastMonth: 'vs mois dernier'
+    trendVsLastMonth: 'vs mois dernier',
+    quotesTitle: 'Gestion des Devis',
+    createQuote: 'Créer un Devis',
+    quoteReference: 'Réf',
+    client: 'Client',
+    date: 'Date',
+    status: 'Statut',
+    amount: 'Montant',
+    actions: 'Actions',
+    print: 'Imprimer',
+    delete: 'Supprimer',
+    newQuote: 'Nouveau Devis',
+    companyInfo: 'Infos Entreprise',
+    clientInfo: 'Infos Client',
+    items: 'Prestations',
+    description: 'Description',
+    qty: 'Qté',
+    price: 'Prix Unit. (€)',
+    total: 'Total',
+    terms: 'Conditions',
+    validUntil: 'Valide jusqu\'au',
+    paymentTerms: 'Conditions de paiement',
+    notes: 'Notes / Durée',
+    bonPourAccord: 'Bon pour accord',
+    preview: 'Aperçu',
+    edit: 'Éditer',
+    downloadPdf: 'Télécharger PDF',
+    subtotal: 'Total HT',
+    vat: 'TVA (20%)',
+    totalTTC: 'Total TTC',
+    noQuotes: 'Aucun devis créé. Demandez à Elsi d\'en créer un !'
   }
 };
 

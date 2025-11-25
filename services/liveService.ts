@@ -4,6 +4,7 @@ import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
 import { LIVE_MODEL_ID } from './geminiService';
 import { createPcmBlob, decodeAudioData, PLAYBACK_SAMPLE_RATE } from './audioUtils';
 import { Language, VoiceName } from '../types';
+import { quoteTools } from './toolDefinitions';
 
 interface UseLiveSessionReturn {
   isConnected: boolean;
@@ -14,7 +15,7 @@ interface UseLiveSessionReturn {
   error: string | null;
 }
 
-export const useLiveSession = (): UseLiveSessionReturn => {
+export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<any[]>): UseLiveSessionReturn => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,7 +99,11 @@ export const useLiveSession = (): UseLiveSessionReturn => {
       analyzerRef.current.fftSize = 256;
       updateVolume();
 
-      const systemInstruction = `You are Elsi, a smart voice assistant for a business owner. Keep answers concise, professional, but friendly. Speak naturally. ${language === 'fr' ? 'Speak in French.' : 'Speak in English.'}`;
+      const systemInstruction = `You are Elsi, a smart voice assistant for a business owner. 
+      You can manage QUOTES (Devis). You have tools to create, list, and delete quotes.
+      If the user wants to create a quote, guide them by asking for: Client Name, Items (Description, Price).
+      Keep answers concise, professional, but friendly. Speak naturally. 
+      ${language === 'fr' ? 'Speak in French.' : 'Speak in English.'}`;
 
       // Initiate Gemini Live Connection
       sessionPromiseRef.current = ai.live.connect({
@@ -108,7 +113,8 @@ export const useLiveSession = (): UseLiveSessionReturn => {
           systemInstruction: systemInstruction,
           speechConfig: {
               voiceConfig: { prebuiltVoiceConfig: { voiceName } }
-          }
+          },
+          tools: [{ functionDeclarations: quoteTools }]
         },
         callbacks: {
           onopen: () => {
@@ -141,6 +147,21 @@ export const useLiveSession = (): UseLiveSessionReturn => {
             processorRef.current.connect(inputContextRef.current.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
+            // Handle Tool Calls
+            if (msg.toolCall && onToolCall) {
+                console.log("Live Tool Call received:", msg.toolCall);
+                const responses = await onToolCall(msg.toolCall.functionCalls);
+                
+                // Send response back
+                sessionPromiseRef.current?.then(session => {
+                    session.sendToolResponse({
+                        functionResponses: responses
+                    });
+                });
+                return;
+            }
+
+            // Handle Audio
             const audioData = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (audioData && outputContextRef.current) {
                // Handle Audio Playback
@@ -179,7 +200,7 @@ export const useLiveSession = (): UseLiveSessionReturn => {
       setError(err.message || "Failed to access microphone or connect.");
       disconnect();
     }
-  }, [disconnect, isConnected, isConnecting]);
+  }, [disconnect, isConnected, isConnecting, onToolCall]);
 
   // Cleanup on unmount
   useEffect(() => {
