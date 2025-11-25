@@ -18,8 +18,8 @@ export const QuotesView: React.FC<QuotesViewProps> = ({ quotes, language, onUpda
   const [previewMode, setPreviewMode] = useState(false);
 
   // Helper to calculate total
-  const calculateTotal = (items: QuoteItem[]) => items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-  const calculateTax = (items: QuoteItem[]) => items.reduce((sum, item) => sum + (item.quantity * item.unitPrice * (item.taxRate/100)), 0);
+  const calculateTotal = (items: QuoteItem[]) => (items || []).reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+  const calculateTax = (items: QuoteItem[]) => (items || []).reduce((sum, item) => sum + (item.quantity * item.unitPrice * (item.taxRate/100)), 0);
 
   const handleCreateNew = () => {
       const newQuote: Quote = {
@@ -62,7 +62,7 @@ export const QuotesView: React.FC<QuotesViewProps> = ({ quotes, language, onUpda
       if (!currentQuote) return;
       setCurrentQuote({
           ...currentQuote,
-          items: [...currentQuote.items, { id: Date.now().toString(), description: '', quantity: 1, unitPrice: 0, taxRate: 20 }]
+          items: [...(currentQuote.items || []), { id: Date.now().toString(), description: '', quantity: 1, unitPrice: 0, taxRate: 20 }]
       });
   };
 
@@ -192,7 +192,7 @@ export const QuotesView: React.FC<QuotesViewProps> = ({ quotes, language, onUpda
                              </tr>
                          </thead>
                          <tbody className="text-slate-700">
-                             {currentQuote.items.map((item) => (
+                             {(currentQuote.items || []).map((item) => (
                                  <tr key={item.id} className="border-b border-slate-50">
                                      <td className="py-4">
                                          {previewMode ? item.description : (

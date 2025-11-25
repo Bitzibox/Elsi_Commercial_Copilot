@@ -4,21 +4,23 @@ import { FunctionDeclaration, Type } from '@google/genai';
 export const quoteTools: FunctionDeclaration[] = [
   {
     name: 'create_quote',
-    description: 'Create a new business quote (devis). Collect client info, items, and pricing from the user first.',
+    description: 'Create a new business quote (devis). You must have the Client Name AND at least one Item (Description, Price) before calling this. Do not call this with empty items.',
     parameters: {
       type: Type.OBJECT,
       properties: {
-        clientName: { type: Type.STRING, description: "Name of the client or company" },
+        clientName: { type: Type.STRING, description: "Name of the client or company. Mandatory." },
         clientCity: { type: Type.STRING, description: "City of the client" },
         items: {
           type: Type.ARRAY,
+          description: "List of items/services. Mandatory. Cannot be empty.",
           items: {
             type: Type.OBJECT,
             properties: {
-              description: { type: Type.STRING },
-              quantity: { type: Type.NUMBER },
-              unitPrice: { type: Type.NUMBER }
-            }
+              description: { type: Type.STRING, description: "Description of the service or product" },
+              quantity: { type: Type.NUMBER, description: "Quantity" },
+              unitPrice: { type: Type.NUMBER, description: "Price per unit in Euros" }
+            },
+            required: ['description', 'quantity', 'unitPrice']
           }
         },
         validDays: { type: Type.NUMBER, description: "Number of days the quote is valid for (default 30)" }

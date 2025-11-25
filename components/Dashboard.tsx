@@ -53,40 +53,44 @@ export const Dashboard: React.FC<DashboardProps> = ({ language }) => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80 min-h-[320px] w-full">
           <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('revenueVsExpenses', language)}</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={mockData}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-              <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              />
-              <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
-              <Area type="monotone" dataKey="expenses" stroke="#f43f5e" strokeWidth={3} fillOpacity={0} fill="transparent" />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div style={{ width: '100%', height: '240px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={mockData}>
+                <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                <Area type="monotone" dataKey="expenses" stroke="#f43f5e" strokeWidth={3} fillOpacity={0} fill="transparent" />
+                </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80 min-h-[320px] w-full">
           <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('aiForecastAccuracy', language)}</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={mockData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
-              <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ borderRadius: '8px', border: 'none' }}/>
-              <Bar dataKey="revenue" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="forecast" fill="#818cf8" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div style={{ width: '100%', height: '240px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={mockData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{ borderRadius: '8px', border: 'none' }}/>
+                <Bar dataKey="revenue" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="forecast" fill="#818cf8" radius={[4, 4, 0, 0]} />
+                </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
       

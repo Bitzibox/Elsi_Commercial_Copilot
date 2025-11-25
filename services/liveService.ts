@@ -34,6 +34,16 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
   const analyzerRef = useRef<AnalyserNode | null>(null);
   const animFrameRef = useRef<number>(0);
 
+  // IMPORTANT: Use a Ref for the tool callback.
+  // This ensures the WebSocket 'onmessage' handler (which is created once at connection time)
+  // always accesses the *latest* version of handleToolCalls from App.tsx.
+  // Without this, the session accesses a "stale" closure where 'quotes' is always empty.
+  const onToolCallRef = useRef(onToolCall);
+
+  useEffect(() => {
+    onToolCallRef.current = onToolCall;
+  }, [onToolCall]);
+
   const disconnect = useCallback(() => {
     // Close session if possible
     if (processorRef.current) {
@@ -99,10 +109,18 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
       analyzerRef.current.fftSize = 256;
       updateVolume();
 
+      // STRONGER System Instruction to prevent empty quotes
       const systemInstruction = `You are Elsi, a smart voice assistant for a business owner. 
       You can manage QUOTES (Devis). You have tools to create, list, and delete quotes.
-      If the user wants to create a quote, guide them by asking for: Client Name, Items (Description, Price).
-      Keep answers concise, professional, but friendly. Speak naturally. 
+      
+      IMPORTANT RULES FOR CREATING QUOTES:
+      1. You MUST ask for the Client Name.
+      2. You MUST ask for the Items (Description, Quantity, and Price).
+      3. DO NOT call the 'create_quote' tool until you have collected ALL this information.
+      4. If the user says "Create a quote", respond with "Sure, who is the client?" or "What items should I add?".
+      5. Never make up data.
+      
+      Keep answers concise, professional, but friendly. Speak naturally.
       ${language === 'fr' ? 'Speak in French.' : 'Speak in English.'}`;
 
       // Initiate Gemini Live Connection
@@ -148,16 +166,23 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
           },
           onmessage: async (msg: LiveServerMessage) => {
             // Handle Tool Calls
-            if (msg.toolCall && onToolCall) {
+            // Access onToolCall via the Ref to get the LATEST version
+            if (msg.toolCall && onToolCallRef.current) {
                 console.log("Live Tool Call received:", msg.toolCall);
-                const responses = await onToolCall(msg.toolCall.functionCalls);
                 
-                // Send response back
-                sessionPromiseRef.current?.then(session => {
+                try {
+                  const responses = await onToolCallRef.current(msg.toolCall.functionCalls);
+                  
+                  // Send response back
+                  if (sessionPromiseRef.current) {
+                    const session = await sessionPromiseRef.current;
                     session.sendToolResponse({
                         functionResponses: responses
                     });
-                });
+                  }
+                } catch (e) {
+                  console.error("Error executing tool or sending response", e);
+                }
                 return;
             }
 
@@ -189,7 +214,7 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
           },
           onerror: (err) => {
             console.error("Elsi Session Error", err);
-            setError("Connection error. Please try again.");
+            // Don't disconnect immediately on minor errors, but for now we do to be safe
             disconnect();
           }
         }
@@ -200,7 +225,7 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
       setError(err.message || "Failed to access microphone or connect.");
       disconnect();
     }
-  }, [disconnect, isConnected, isConnecting, onToolCall]);
+  }, [disconnect, isConnected, isConnecting]); // Removed onToolCall from dependencies as we use the Ref
 
   // Cleanup on unmount
   useEffect(() => {
