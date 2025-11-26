@@ -1,7 +1,6 @@
-
 import { GoogleGenAI, Chat, Type } from "@google/genai";
-import { GeneratedArtifact, ArtifactType, Language } from "../types";
-import { quoteTools } from "./toolDefinitions";
+import { GeneratedArtifact, ArtifactType, Language } from "../types.ts";
+import { quoteTools } from "./toolDefinitions.ts";
 
 const apiKey = process.env.API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });

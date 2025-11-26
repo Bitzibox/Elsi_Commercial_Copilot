@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { SalesData, BusinessMetric, Language } from '../types';
+import { SalesData, BusinessMetric, Language } from '../types.ts';
 import { TrendingUp, TrendingDown, DollarSign, Users, Briefcase } from 'lucide-react';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.ts';
 
 const mockData: SalesData[] = [
   { month: 'Jan', revenue: 4000, expenses: 2400, forecast: 4200 },

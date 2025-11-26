@@ -1,10 +1,9 @@
-
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
-import { LIVE_MODEL_ID } from './geminiService';
-import { createPcmBlob, decodeAudioData, PLAYBACK_SAMPLE_RATE } from './audioUtils';
-import { Language, VoiceName } from '../types';
-import { quoteTools } from './toolDefinitions';
+import { LIVE_MODEL_ID } from './geminiService.ts';
+import { createPcmBlob, decodeAudioData, PLAYBACK_SAMPLE_RATE } from './audioUtils.ts';
+import { Language, VoiceName } from '../types.ts';
+import { quoteTools } from './toolDefinitions.ts';
 
 interface UseLiveSessionReturn {
   isConnected: boolean;

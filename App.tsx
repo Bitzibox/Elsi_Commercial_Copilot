@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { AppMode, Message, ArtifactType, GeneratedArtifact, AppSettings, Alert, ReportTemplate, Quote } from './types.ts';
+import { AppMode, Message, AppSettings, Alert, ReportTemplate, Quote, GeneratedArtifact } from './types.ts';
 import { Dashboard } from './components/Dashboard.tsx';
 import { SettingsView } from './components/SettingsView.tsx';
 import { DocumentsView } from './components/DocumentsView.tsx';
 import { QuotesView } from './components/QuotesView.tsx';
 import { useLiveSession } from './services/liveService.ts';
-import { sendMessageToElsi, generateArtifact, getChatSession } from './services/geminiService.ts';
+import { sendMessageToElsi, getChatSession } from './services/geminiService.ts';
 import { t } from './utils/i18n.ts';
 import { 
     LayoutDashboard, 
@@ -18,8 +18,6 @@ import {
     Sparkles, 
     Settings,
     Bell,
-    FileCheck,
-    Table,
     ChevronRight,
     AlertCircle,
     ScrollText
@@ -251,6 +249,18 @@ const App: React.FC = () => {
 
   // --- Render Components ---
 
+  const NavButton = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+    <button 
+        onClick={onClick}
+        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+            active ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+        }`}
+    >
+        {icon}
+        <span className="font-medium">{label}</span>
+    </button>
+  );
+
   const renderNav = () => (
     <nav className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative z-50 w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out flex flex-col`}>
         <div className="p-6 flex items-center justify-between">
@@ -447,4 +457,29 @@ const App: React.FC = () => {
                     templates={templates}
                     language={settings.language}
                     onGenerate={(art) => setArtifacts([art, ...artifacts])}
-                    onAdd
+                    onAddTemplate={(tpl) => setTemplates([...templates, tpl])}
+                    switchToChat={() => switchMode(AppMode.CHAT)}
+                />
+            )}
+            {mode === AppMode.QUOTES && (
+                <QuotesView 
+                    quotes={quotes}
+                    language={settings.language}
+                    onCreate={(q) => setQuotes([...quotes, q])}
+                    onUpdate={(q) => setQuotes(quotes.map(old => old.id === q.id ? q : old))}
+                    onDelete={(id) => setQuotes(quotes.filter(q => q.id !== id))}
+                />
+            )}
+            {mode === AppMode.SETTINGS && (
+                <SettingsView 
+                    settings={settings}
+                    onUpdate={setSettings}
+                />
+            )}
+         </main>
+      </div>
+    </div>
+  );
+};
+
+export default App;

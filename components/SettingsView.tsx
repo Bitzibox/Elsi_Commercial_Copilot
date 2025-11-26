@@ -1,8 +1,7 @@
-
 import React from 'react';
-import { AppSettings, Language, VoiceName } from '../types';
+import { AppSettings, Language, VoiceName } from '../types.ts';
 import { Settings, Globe, Mic, Bell, Save, Building, Upload } from 'lucide-react';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.ts';
 
 interface SettingsViewProps {
   settings: AppSettings;

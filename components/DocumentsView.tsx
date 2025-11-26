@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
-import { GeneratedArtifact, ReportTemplate, ArtifactType, Language } from '../types';
+import { GeneratedArtifact, ReportTemplate, ArtifactType, Language } from '../types.ts';
 import { FileText, FileCheck, Table, ChevronRight, Plus, Play } from 'lucide-react';
-import { t } from '../utils/i18n';
-import { generateArtifact } from '../services/geminiService';
+import { t } from '../utils/i18n.ts';
+import { generateArtifact } from '../services/geminiService.ts';
 
 interface DocumentsViewProps {
   artifacts: GeneratedArtifact[];

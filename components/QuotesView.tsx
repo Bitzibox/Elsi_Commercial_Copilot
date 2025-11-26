@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
-import { Quote, Language, QuoteItem } from '../types';
+import { Quote, Language, QuoteItem } from '../types.ts';
 import { Plus, Printer, Trash2, Edit, Check, X, FileText, Download, Calendar } from 'lucide-react';
-import { t } from '../utils/i18n';
+import { t } from '../utils/i18n.ts';
 
 interface QuotesViewProps {
   quotes: Quote[];

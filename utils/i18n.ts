@@ -1,5 +1,4 @@
-
-import { Language } from '../types';
+import { Language } from '../types.ts';
 
 type TranslationKey = 
   | 'dashboard' | 'chat' | 'voice' | 'documents' | 'settings' | 'quotes'
