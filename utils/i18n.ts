@@ -19,7 +19,9 @@ type TranslationKey =
   | 'amount' | 'actions' | 'print' | 'delete' | 'newQuote' | 'companyInfo'
   | 'clientInfo' | 'items' | 'description' | 'qty' | 'price' | 'total'
   | 'terms' | 'validUntil' | 'paymentTerms' | 'notes' | 'bonPourAccord'
-  | 'preview' | 'edit' | 'downloadPdf' | 'subtotal' | 'vat' | 'totalTTC' | 'noQuotes';
+  | 'preview' | 'edit' | 'downloadPdf' | 'subtotal' | 'vat' | 'totalTTC' | 'noQuotes'
+  | 'companyProfile' | 'legalForm' | 'capital' | 'siret' | 'vatNumber' | 'uploadLogo'
+  | 'startDate' | 'duration' | 'legalFooter';
 
 const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
@@ -104,7 +106,16 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     subtotal: 'Subtotal (HT)',
     vat: 'VAT (20%)',
     totalTTC: 'Total (TTC)',
-    noQuotes: 'No quotes created yet. Ask Elsi to create one!'
+    noQuotes: 'No quotes created yet. Ask Elsi to create one!',
+    companyProfile: 'Company Profile & Branding',
+    legalForm: 'Legal Form (e.g. SAS)',
+    capital: 'Capital',
+    siret: 'SIRET Number',
+    vatNumber: 'VAT Number',
+    uploadLogo: 'Upload Logo',
+    startDate: 'Start Date',
+    duration: 'Duration',
+    legalFooter: 'Business Entity registered under SIRET'
   },
   fr: {
     dashboard: 'Tableau de Bord',
@@ -188,7 +199,16 @@ const translations: Record<Language, Record<TranslationKey, string>> = {
     subtotal: 'Total HT',
     vat: 'TVA (20%)',
     totalTTC: 'Total TTC',
-    noQuotes: 'Aucun devis créé. Demandez à Elsi d\'en créer un !'
+    noQuotes: 'Aucun devis créé. Demandez à Elsi d\'en créer un !',
+    companyProfile: 'Profil Entreprise & Marque',
+    legalForm: 'Forme Juridique (ex: SAS)',
+    capital: 'Capital',
+    siret: 'Numéro SIRET',
+    vatNumber: 'Numéro TVA',
+    uploadLogo: 'Télécharger Logo',
+    startDate: 'Date de début',
+    duration: 'Durée',
+    legalFooter: 'Société immatriculée sous le SIRET'
   }
 };
 

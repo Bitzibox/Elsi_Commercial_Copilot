@@ -4,7 +4,7 @@ import { FunctionDeclaration, Type } from '@google/genai';
 export const quoteTools: FunctionDeclaration[] = [
   {
     name: 'create_quote',
-    description: 'Create a new business quote (devis). You must have the Client Name AND at least one Item (Description, Price) before calling this. Do not call this with empty items.',
+    description: 'Create a new business quote (devis). You must have the Client Name AND at least one Item (Description, Price). Collect Start Date, Duration, and Payment Terms if possible.',
     parameters: {
       type: Type.OBJECT,
       properties: {
@@ -23,7 +23,10 @@ export const quoteTools: FunctionDeclaration[] = [
             required: ['description', 'quantity', 'unitPrice']
           }
         },
-        validDays: { type: Type.NUMBER, description: "Number of days the quote is valid for (default 30)" }
+        validDays: { type: Type.NUMBER, description: "Number of days the quote is valid for (default 30)" },
+        startDate: { type: Type.STRING, description: "Estimated start date of the project (YYYY-MM-DD)" },
+        duration: { type: Type.STRING, description: "Duration of the work (e.g., '2 weeks')" },
+        paymentTerms: { type: Type.STRING, description: "Payment terms (e.g., '30% deposit, balance on completion')" }
       },
       required: ['clientName', 'items']
     }
@@ -45,6 +48,21 @@ export const quoteTools: FunctionDeclaration[] = [
               referenceId: { type: Type.STRING, description: "The reference ID of the quote (e.g., Q-2024-001)"}
           },
           required: ['referenceId']
+      }
+  },
+  {
+      name: 'update_business_info',
+      description: 'Update the user\'s own company profile settings.',
+      parameters: {
+          type: Type.OBJECT,
+          properties: {
+              name: { type: Type.STRING, description: "Company Legal Name" },
+              siret: { type: Type.STRING, description: "SIRET Number" },
+              vatNumber: { type: Type.STRING, description: "VAT Number" },
+              address: { type: Type.STRING, description: "Street Address" },
+              city: { type: Type.STRING, description: "City" },
+              email: { type: Type.STRING, description: "Company Email" }
+          }
       }
   }
 ];

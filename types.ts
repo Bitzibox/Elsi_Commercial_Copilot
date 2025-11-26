@@ -53,10 +53,27 @@ export interface AlertConfig {
   inventoryThreshold: number;
 }
 
+// Detailed Company Profile for Settings
+export interface CompanyProfile {
+  name: string;
+  legalForm?: string; // e.g. SAS, SARL
+  capital?: string; // e.g. 10000
+  address: string;
+  city: string;
+  zip: string;
+  country: string;
+  email: string;
+  phone: string;
+  siret: string;
+  vatNumber?: string; // Numéro TVA
+  logo?: string; // Base64 data URL
+}
+
 export interface AppSettings {
   language: Language;
   voiceName: VoiceName;
   alerts: AlertConfig;
+  businessProfile: CompanyProfile;
 }
 
 export interface Alert {
@@ -84,14 +101,7 @@ export interface Address {
   country: string;
 }
 
-export interface CompanyInfo {
-  name: string;
-  address: Address;
-  email: string;
-  phone: string;
-  siret: string;
-  vatNumber?: string;
-}
+export interface CompanyInfo extends CompanyProfile {}
 
 export interface ClientInfo {
   name: string;
@@ -115,6 +125,8 @@ export interface Quote {
   status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED';
   date: string; // ISO Date
   validUntil: string; // ISO Date
+  
+  // New Timeline Fields
   startDate?: string;
   duration?: string;
   

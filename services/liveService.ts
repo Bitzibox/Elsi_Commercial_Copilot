@@ -34,10 +34,7 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
   const analyzerRef = useRef<AnalyserNode | null>(null);
   const animFrameRef = useRef<number>(0);
 
-  // IMPORTANT: Use a Ref for the tool callback.
-  // This ensures the WebSocket 'onmessage' handler (which is created once at connection time)
-  // always accesses the *latest* version of handleToolCalls from App.tsx.
-  // Without this, the session accesses a "stale" closure where 'quotes' is always empty.
+  // IMPORTANT: Use a Ref for the tool callback to prevent stale closures.
   const onToolCallRef = useRef(onToolCall);
 
   useEffect(() => {
@@ -109,16 +106,18 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
       analyzerRef.current.fftSize = 256;
       updateVolume();
 
-      // STRONGER System Instruction to prevent empty quotes
-      const systemInstruction = `You are Elsi, a smart voice assistant for a business owner. 
-      You can manage QUOTES (Devis). You have tools to create, list, and delete quotes.
+      // STRONGER System Instruction with Business Persona
+      const systemInstruction = `You are Elsi, a smart voice assistant and business consultant for an entrepreneur. 
       
-      IMPORTANT RULES FOR CREATING QUOTES:
-      1. You MUST ask for the Client Name.
-      2. You MUST ask for the Items (Description, Quantity, and Price).
-      3. DO NOT call the 'create_quote' tool until you have collected ALL this information.
-      4. If the user says "Create a quote", respond with "Sure, who is the client?" or "What items should I add?".
-      5. Never make up data.
+      CAPABILITIES:
+      1. **Quotes**: Create, list, delete quotes (Devis).
+      2. **Business Info**: You can update the user's company info using 'update_business_info'.
+      3. **Advisory**: Provide advice on commercial strategy, sales, and management.
+
+      RULES FOR QUOTES:
+      - Ask for Client Name, Items (Description, Qty, Price).
+      - Ask for Start Date, Duration, and Payment Terms if relevant.
+      - **Wait for details** before calling 'create_quote'.
       
       Keep answers concise, professional, but friendly. Speak naturally.
       ${language === 'fr' ? 'Speak in French.' : 'Speak in English.'}`;
@@ -165,8 +164,7 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
             processorRef.current.connect(inputContextRef.current.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
-            // Handle Tool Calls
-            // Access onToolCall via the Ref to get the LATEST version
+            // Handle Tool Calls via Ref
             if (msg.toolCall && onToolCallRef.current) {
                 console.log("Live Tool Call received:", msg.toolCall);
                 
@@ -214,7 +212,6 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
           },
           onerror: (err) => {
             console.error("Elsi Session Error", err);
-            // Don't disconnect immediately on minor errors, but for now we do to be safe
             disconnect();
           }
         }
@@ -225,7 +222,7 @@ export const useLiveSession = (onToolCall?: (functionCalls: any[]) => Promise<an
       setError(err.message || "Failed to access microphone or connect.");
       disconnect();
     }
-  }, [disconnect, isConnected, isConnecting]); // Removed onToolCall from dependencies as we use the Ref
+  }, [disconnect, isConnected, isConnecting]);
 
   // Cleanup on unmount
   useEffect(() => {

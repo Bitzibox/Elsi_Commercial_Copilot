@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { AppSettings, Language, VoiceName } from '../types';
-import { Settings, Globe, Mic, Bell, Save } from 'lucide-react';
+import { Settings, Globe, Mic, Bell, Save, Building, Upload } from 'lucide-react';
 import { t } from '../utils/i18n';
 
 interface SettingsViewProps {
@@ -21,6 +21,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate }
     });
   };
 
+  const handleProfileChange = (key: string, value: string) => {
+      onUpdate({
+          ...settings,
+          businessProfile: { ...settings.businessProfile, [key]: value }
+      });
+  };
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+              handleProfileChange('logo', reader.result as string);
+          };
+          reader.readAsDataURL(file);
+      }
+  };
+
   return (
     <div className="p-6 md:p-10 h-full overflow-y-auto bg-slate-50">
       <header className="mb-8">
@@ -31,6 +49,83 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ settings, onUpdate }
       </header>
 
       <div className="max-w-3xl space-y-6">
+        {/* Company Profile & Branding */}
+        <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+            <Building size={20} />
+            {t('companyProfile', settings.language)}
+          </h3>
+          
+          <div className="flex flex-col md:flex-row gap-6">
+              {/* Logo Upload */}
+              <div className="flex flex-col items-center gap-3">
+                  <div className="w-24 h-24 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden">
+                      {settings.businessProfile.logo ? (
+                          <img src={settings.businessProfile.logo} alt="Logo" className="w-full h-full object-contain" />
+                      ) : (
+                          <span className="text-xs text-slate-400 text-center p-2">No Logo</span>
+                      )}
+                  </div>
+                  <label className="cursor-pointer px-3 py-1.5 bg-indigo-50 text-indigo-600 text-sm font-medium rounded-lg hover:bg-indigo-100 flex items-center gap-1 transition">
+                      <Upload size={14} /> {t('uploadLogo', settings.language)}
+                      <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                  </label>
+              </div>
+
+              {/* Form Fields */}
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input 
+                    placeholder="Company Legal Name"
+                    value={settings.businessProfile.name}
+                    onChange={(e) => handleProfileChange('name', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                  <input 
+                    placeholder={t('legalForm', settings.language)}
+                    value={settings.businessProfile.legalForm || ''}
+                    onChange={(e) => handleProfileChange('legalForm', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                   <input 
+                    placeholder={t('siret', settings.language)}
+                    value={settings.businessProfile.siret}
+                    onChange={(e) => handleProfileChange('siret', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                  <input 
+                    placeholder={t('vatNumber', settings.language)}
+                    value={settings.businessProfile.vatNumber || ''}
+                    onChange={(e) => handleProfileChange('vatNumber', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                  <input 
+                    placeholder="Address"
+                    value={settings.businessProfile.address}
+                    onChange={(e) => handleProfileChange('address', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                  <input 
+                    placeholder="City & Zip"
+                    value={settings.businessProfile.city}
+                    onChange={(e) => handleProfileChange('city', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                   <input 
+                    placeholder="Email"
+                    value={settings.businessProfile.email}
+                    onChange={(e) => handleProfileChange('email', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+                   <input 
+                    placeholder="Phone"
+                    value={settings.businessProfile.phone}
+                    onChange={(e) => handleProfileChange('phone', e.target.value)}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                  />
+              </div>
+          </div>
+        </section>
+
         {/* Language & Voice */}
         <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
           <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
